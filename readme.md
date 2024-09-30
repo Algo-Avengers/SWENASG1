@@ -1,11 +1,8 @@
 # ID: 816034409
 # Student Conduct Tracker
-# Description
-Staff system for recording positive and negative experiences with students.
 
 # CLI Commands
-
-# Staff Commands
+Staff Commands
 - Add Student  
   Usage: flask staff add <student_id> <first_name> <last_name> <programme> <faculty>
 
@@ -15,7 +12,7 @@ Staff system for recording positive and negative experiences with students.
 - List All Students  
   Usage: flask staff listStudents
 
-# Review Commands
+Review Commands
 - Create a Review
   Usage: flask review create <review_id> <student_id> <staff_id> <review_type> <comment>
 
@@ -110,9 +107,13 @@ Then execute the command invoking with flask cli with command name and the relev
 ```bash
 $ flask user create bob bobpass
 ```
+
+# MY COMMANDS
+
+Add Student: 
+
 staff_cli = AppGroup('staff', help='Staff object commands')
 
-# Command to add students - Add Student
 @staff_cli.command("add", help="Add a student")
 @click.argument("student_id", type=int)
 @click.argument("first_name", type=str)
@@ -128,8 +129,8 @@ Then execute the command invoking with flask cli with command name and the relev
 ```bash
 $ flask staff add 123 Jake Blue "Computer Science" "FST"
 ```
-# command to search for a student using student ID - Search Student
-# Returns student name and their reviews
+Search Student:
+
 @staff_cli.command("search", help="Search a student by ID and Name")
 @click.argument("student_id", type=int)
 def search_student_command(student_id):
@@ -153,7 +154,8 @@ Then execute the command invoking with flask cli with command name and the relev
 ```bash
 $ flask staff search 123
 ```
-# extra command that lists all students added and their information
+Extra Command to List Students:
+
 @staff_cli.command("listStudents", help="List all students in the system")
 def list_students_command():
     students = get_all_students()
@@ -177,7 +179,8 @@ $ flask staff listStudents
 
 review_cli = AppGroup('review', help='Review related commands')
 
-# command that adds/creates a new review - Review Student
+Review Student: 
+
 @review_cli.command("create", help="Create a new review")
 @click.argument("review_id", type=int)
 @click.argument("student_id", type=int)
@@ -198,7 +201,8 @@ Then execute the command invoking with flask cli with command name and the relev
 ```bash
 $ flask review create 100 123 001 "Positive" "Good at participation."
 ```
-# command that views all reviews for a specific student - View Student Reviews
+View Student Reviews:
+
 @review_cli.command("viewreviews", help="View all reviews for a student")
 @click.argument("student_id", type=int)
 def view_reviews_command(student_id):
