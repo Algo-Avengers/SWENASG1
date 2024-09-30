@@ -1,3 +1,28 @@
+# ID: 816034409
+# Student Conduct Tracker
+# Description
+Staff system for recording positive and negative experiences with students.
+
+# CLI Commands
+
+# Staff Commands
+- Add Student  
+  Usage: flask staff add <student_id> <first_name> <last_name> <programme> <faculty>
+
+- Search Student  
+  Usage: flask staff search <student_id>
+
+- List All Students  
+  Usage: flask staff listStudents
+
+# Review Commands
+- Create a Review
+  Usage: flask review create <review_id> <student_id> <staff_id> <review_type> <comment>
+
+- View Student Reviews  
+  Usage: flask review viewreviews <student_id>
+
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/uwidcit/flaskmvc)
 <a href="https://render.com/deploy?repo=https://github.com/uwidcit/flaskmvc">
   <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render">
@@ -85,7 +110,116 @@ Then execute the command invoking with flask cli with command name and the relev
 ```bash
 $ flask user create bob bobpass
 ```
+staff_cli = AppGroup('staff', help='Staff object commands')
 
+# Command to add students - Add Student
+@staff_cli.command("add", help="Add a student")
+@click.argument("student_id", type=int)
+@click.argument("first_name", type=str)
+@click.argument("last_name", type=str)
+@click.argument("programme", type=str)
+@click.argument("faculty", type=str)
+def add_student_command(student_id, first_name, last_name, programme, faculty):
+    add_student(student_id, first_name, last_name, programme, faculty)
+    print(f'Student {first_name} {last_name} added!')
+
+Then execute the command invoking with flask cli with command name and the relevant parameters
+
+```bash
+$ flask staff add 123 Jake Blue "Computer Science" "FST"
+```
+# command to search for a student using student ID - Search Student
+# Returns student name and their reviews
+@staff_cli.command("search", help="Search a student by ID and Name")
+@click.argument("student_id", type=int)
+def search_student_command(student_id):
+    student = search_student(student_id)
+    if student:
+        print(f"Student found: {student.firstName} {student.lastName}, ID: {student.studentID}")
+        reviews = student.reviews
+        if reviews:
+            print("Reviews:")
+            for review in reviews:
+                print(f"- {review.reviewType}: {review.comment} (Staff ID: {review.staffID})")
+        else:
+            print("No reviews found for this student.")
+    else:
+        print(f"No student found with ID {student_id}.")
+
+app.cli.add_command(staff_cli)  # adds staff group to the cli
+
+Then execute the command invoking with flask cli with command name and the relevant parameters
+
+```bash
+$ flask staff search 123
+```
+# extra command that lists all students added and their information
+@staff_cli.command("listStudents", help="List all students in the system")
+def list_students_command():
+    students = get_all_students()
+    if students:
+        for student in students:
+            print(f"Student ID: {student.studentID}")
+            print(f"Name: {student.firstName} {student.lastName}")
+            print(f"Programme: {student.programme}")
+            print(f"Faculty: {student.faculty}")
+            print("-----------")  # Separator between students
+    else:
+        print("No students found in the system.")
+
+app.cli.add_command(staff_cli)  # adds staff group to the cli
+
+Then execute the command invoking with flask cli with command name and the relevant parameters
+
+```bash
+$ flask staff listStudents
+```
+
+review_cli = AppGroup('review', help='Review related commands')
+
+# command that adds/creates a new review - Review Student
+@review_cli.command("create", help="Create a new review")
+@click.argument("review_id", type=int)
+@click.argument("student_id", type=int)
+@click.argument("staff_id", type=int)
+@click.argument("review_type", type=str)
+@click.argument("comment", type=str)
+def create_review_command(review_id, student_id, staff_id, review_type, comment):
+    review = add_review(review_id, student_id, staff_id, review_type, comment)
+    if review:
+        print(f"Review for student {student_id} created!")
+    else:
+        print("Failed to create review.")
+
+app.cli.add_command(review_cli)  # adds review group to the cli
+
+Then execute the command invoking with flask cli with command name and the relevant parameters
+
+```bash
+$ flask review create 100 123 001 "Positive" "Good at participation."
+```
+# command that views all reviews for a specific student - View Student Reviews
+@review_cli.command("viewreviews", help="View all reviews for a student")
+@click.argument("student_id", type=int)
+def view_reviews_command(student_id):
+    reviews = view_reviews(student_id)
+    if reviews:
+        for review in reviews:
+            print(f"Review ID: {review.reviewID}")
+            print(f"Staff ID: {review.staffID}")
+            print(f"Review Type: {review.reviewType}")
+            print(f"Comment: {review.comment}")
+            print("-----------")  # Separator between reviews
+    else:
+        print(f"No reviews found for student with ID {student_id}.")
+
+app.cli.add_command(review_cli)  # adds review group to the cli
+
+Then execute the command invoking with flask cli with command name and the relevant parameters
+
+```bash
+$ flask review viewreviews 123
+```
 
 # Running the Project
 
