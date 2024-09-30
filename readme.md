@@ -109,11 +109,12 @@ $ flask user create bob bobpass
 ```
 
 # MY COMMANDS
-
-Add Student: 
+ 
 ```python
 user_cli = AppGroup('user', help='User object commands')
-
+```
+Add Student:
+```python
 @staff_cli.command("add", help="Add a student")
 @click.argument("student_id", type=int)
 @click.argument("first_name", type=str)
@@ -180,9 +181,9 @@ $ flask staff listStudents
 
 ```python
 review_cli = AppGroup('review', help='Review related commands')
-
+```
 Review Student: 
-
+```python
 @review_cli.command("create", help="Create a new review")
 @click.argument("review_id", type=int)
 @click.argument("student_id", type=int)
