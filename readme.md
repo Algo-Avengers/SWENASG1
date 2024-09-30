@@ -111,8 +111,8 @@ $ flask user create bob bobpass
 # MY COMMANDS
 
 Add Student: 
-
-staff_cli = AppGroup('staff', help='Staff object commands')
+```python
+user_cli = AppGroup('user', help='User object commands')
 
 @staff_cli.command("add", help="Add a student")
 @click.argument("student_id", type=int)
@@ -123,6 +123,7 @@ staff_cli = AppGroup('staff', help='Staff object commands')
 def add_student_command(student_id, first_name, last_name, programme, faculty):
     add_student(student_id, first_name, last_name, programme, faculty)
     print(f'Student {first_name} {last_name} added!')
+```
 
 Then execute the command invoking with flask cli with command name and the relevant parameters
 
@@ -130,7 +131,7 @@ Then execute the command invoking with flask cli with command name and the relev
 $ flask staff add 123 Jake Blue "Computer Science" "FST"
 ```
 Search Student:
-
+```python
 @staff_cli.command("search", help="Search a student by ID and Name")
 @click.argument("student_id", type=int)
 def search_student_command(student_id):
@@ -148,14 +149,14 @@ def search_student_command(student_id):
         print(f"No student found with ID {student_id}.")
 
 app.cli.add_command(staff_cli)  # adds staff group to the cli
-
+```
 Then execute the command invoking with flask cli with command name and the relevant parameters
 
 ```bash
 $ flask staff search 123
 ```
 Extra Command to List Students:
-
+```python
 @staff_cli.command("listStudents", help="List all students in the system")
 def list_students_command():
     students = get_all_students()
@@ -170,13 +171,14 @@ def list_students_command():
         print("No students found in the system.")
 
 app.cli.add_command(staff_cli)  # adds staff group to the cli
-
+```
 Then execute the command invoking with flask cli with command name and the relevant parameters
 
 ```bash
 $ flask staff listStudents
 ```
 
+```python
 review_cli = AppGroup('review', help='Review related commands')
 
 Review Student: 
@@ -195,14 +197,14 @@ def create_review_command(review_id, student_id, staff_id, review_type, comment)
         print("Failed to create review.")
 
 app.cli.add_command(review_cli)  # adds review group to the cli
-
+```
 Then execute the command invoking with flask cli with command name and the relevant parameters
 
 ```bash
 $ flask review create 100 123 001 "Positive" "Good at participation."
 ```
 View Student Reviews:
-
+```python
 @review_cli.command("viewreviews", help="View all reviews for a student")
 @click.argument("student_id", type=int)
 def view_reviews_command(student_id):
@@ -218,7 +220,7 @@ def view_reviews_command(student_id):
         print(f"No reviews found for student with ID {student_id}.")
 
 app.cli.add_command(review_cli)  # adds review group to the cli
-
+```
 Then execute the command invoking with flask cli with command name and the relevant parameters
 
 ```bash
