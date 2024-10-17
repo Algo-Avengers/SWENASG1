@@ -23,23 +23,32 @@ def get_all_students():
 @jwt_required()
 def create_student():
     data = request.json
-    student_id = data.get('id')
-    student_name = data.get('name')
-    if not student_id or not student_name:
-        return jsonify({"error": "Student ID and name required"}), 400
-    result = student.add_student(student_id, student_name)
+    student_id = data.get('studentID')
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    programme = data.get('programme')
+    faculty = data.get('faculty')
+    if not student_id or not first_name or not last_name or not programme or not faculty:
+        return jsonify({"error": "Student ID, first name, last name, programme, and faculty required"}), 400
+    result = student.add_student(student_id, first_name, last_name, programme, faculty)
     return jsonify(result), 201 if "successfully" in result["message"] else 400
 
 @student_views.route('/api/student/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_student(id):
     data = request.json
-    name = data.get('name')
-    if not name:
-        return jsonify({"error": "Name required"}), 400
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    programme = data.get('programme')
+    faculty = data.get('faculty')
+    if not first_name or not last_name or not programme or not faculty:
+        return jsonify({"error": "First name, last name, programme, and faculty required"}), 400
     student = student.query.get(id)
     if not student:
         return jsonify({"error": "Student not found"}), 404
-    student.name = name
+    student.firstName = first_name
+    student.lastName = last_name
+    student.programme = programme
+    student.faculty = faculty
     db.session.commit()
     return jsonify(student.to_dict()), 200

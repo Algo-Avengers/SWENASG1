@@ -51,9 +51,11 @@ def list_user_command(format):
 @user_cli.command("add_student", help="Adds a new student")
 @click.argument("student_id", type=int)
 @click.argument("student_name")
-def add_student_command(student_id, student_name):
-    result = add_student(student_id, student_name)
-    print(result["message"])
+@click.argument("student_name")
+@click.argument("student_programme")
+@click.argument("student_faculty")
+def add_student_command(student_id, student_name, student_programme, student_faculty):
+    result = add_student(student_id, student_name, student_programme, student_faculty)
 
 #search student command
 @user_cli.command("search_student", help="Search for a student by ID")
