@@ -1,7 +1,9 @@
+from flask import flash, redirect, url_for, request
 from flask_admin.contrib.sqla import ModelView
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
 from flask_admin import Admin
 from App.models import db, User
+from App.models import Student, Review
 
 class AdminView(ModelView):
 
@@ -17,3 +19,5 @@ class AdminView(ModelView):
 def setup_admin(app):
     admin = Admin(app, name='FlaskMVC', template_mode='bootstrap3')
     admin.add_view(AdminView(User, db.session))
+    admin.add_view(AdminView(Student, db.session))
+    admin.add_view(AdminView(Review, db.session))

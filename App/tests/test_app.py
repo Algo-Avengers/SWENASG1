@@ -10,7 +10,11 @@ from App.controllers import (
     login,
     get_user,
     get_user_by_username,
-    update_user
+    update_user,
+    add_student,
+    search_student,
+    add_review,
+    view_student_reviews
 )
 
 
@@ -41,6 +45,36 @@ class UserUnitTests(unittest.TestCase):
         password = "mypass"
         user = User("bob", password)
         assert user.check_password(password)
+    def test_add_student(self):
+        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
+        assert student.id == "12345"
+        assert student.name == "Jake Blue"
+        assert student.programme == "Computer Science"
+        assert student.department == "DCIT"
+
+    def test_search_student(self):
+        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
+        search_result = search_student("12345")
+        assert search_result is not None
+        assert search_result.id == "12345"
+        assert search_result.name == "Jake Blue"
+
+    def test_add_review(self):
+        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
+        review = add_review("12345", "0001", "Positive", "COMP 1601", "Excellent Conduct")
+        assert review.studentid == "12345"
+        assert review.staffid == "0001"
+        assert review.type == "Positive"
+        assert review.course == "COMP 1601"
+        assert review.comment == "Excellent Conduct"
+
+    def test_view_reviews(self):
+        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
+        add_review("12345", "0001", "Positive", "COMP 1601", "Excellent Conduct")
+        reviews_list = view_student_reviews("12345")
+        assert reviews_list is not None
+        assert len(reviews_list) > 0
+        assert reviews_list[0].student_id == "12345"
 
 '''
     Integration Tests
@@ -75,5 +109,52 @@ class UsersIntegrationTests(unittest.TestCase):
         update_user(1, "ronnie")
         user = get_user(1)
         assert user.username == "ronnie"
+    
+    # creates an empty database for the test and deletes it after the test
+    def setUp(self):
+        self.app = create_app({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///test.db'})
+        self.client = self.app.test_client()
+        create_db()
+
+    def test_login(self):
+        staff = create_user("staff", "staffpass", is_staff=True)
+        assert login("staff", "staffpass") != None
+        user = get_user_by_username("staff")
+        assert user is not None
+        assert user.username == "staff"
+        assert user.is_staff == True
+
+    def test_add_student(self):
+        student = add_student("John Doe", "12345")
+        retrieved_student = get_user(student.id)
+        assert retrieved_student is not None
+        assert retrieved_student.name == "John Doe"
+        assert retrieved_student.student_id == "12345"
+
+    def test_add_review(self):
+        student = add_student("Jane Doe", "54321")
+        add_review(student.id, "Good performance", 5)
+        reviews = view_student_reviews(student.id)
+        assert len(reviews) == 1
+        assert reviews[0].content == "Good performance"
+        assert reviews[0].rating == 5
+
+    def test_search_student(self):
+        student = add_student("Alice", "67890")
+        searched_student = search_student("67890")
+        assert searched_student is not None
+        assert searched_student.name == "Alice"
+        assert searched_student.student_id == "67890"
+
+    def test_view_student_reviews(self):
+        student = add_student("Bob", "09876")
+        add_review(student.id, "Excellent", 5)
+        add_review(student.id, "Needs improvement", 3)
+        reviews = view_student_reviews(student.id)
+        assert len(reviews) == 2
+        assert reviews[0].content == "Excellent"
+        assert reviews[0].rating == 5
+        assert reviews[1].content == "Needs improvement"
+        assert reviews[1].rating == 3
         
 
