@@ -118,17 +118,17 @@ app.cli.add_command(user_cli) # add the group to the cli
   - Lists users in the database. Format can be `string` (default) or `json`.
   - Example: `flask user list string`
 
-- **`flask user add_student <student_id> <student_name>`**
-  - Adds a new student.
-  - Example: `flask user add_student 12345 "John Doe"`
+- **`flask user add_student <student_id> <student_name> <student_programme> <student_faculty>`**
+  - Adds a new student with the specified details.
+  - Example: `flask user add_student 12345 "John Doe" "Computer Science" "Engineering"`
 
 - **`flask user search_student <student_id>`**
   - Searches for a student by ID.
   - Example: `flask user search_student 12345`
 
-- **`flask user add_review <student_id> <staff_id> <review_text> <rating>`**
+- **`flask user add_review <student_id> <staff_id> <review_type> <comment>`**
   - Adds a review for a student.
-  - Example: `flask user add_review 12345 6789 "Great performance" 5`
+  - Example: `flask user add_review 12345 6789 "Great performance" "Excellent work"`
 
 - **`flask user view_reviews <student_id>`**
   - Views reviews for a specific student.
