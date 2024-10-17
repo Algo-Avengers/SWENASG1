@@ -62,13 +62,3 @@ def update_review(id):
     review.comment = comment
     db.session.commit()
     return jsonify(review_to_json(review)), 200
-
-@review_views.route('/api/review/<int:id>', methods=['DELETE'])
-@jwt_required()
-def delete_review(id):
-    review = review.query.get(id)
-    if not review:
-        return jsonify({"error": "Review not found"}), 404
-    db.session.delete(review)
-    db.session.commit()
-    return jsonify({"message": "Review deleted"}), 200

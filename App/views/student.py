@@ -43,13 +43,3 @@ def update_student(id):
     student.name = name
     db.session.commit()
     return jsonify(student.to_dict()), 200
-
-@student_views.route('/api/student/<int:id>', methods=['DELETE'])
-@jwt_required()
-def delete_student(id):
-    student = student.query.get(id)
-    if not student:
-        return jsonify({"error": "Student not found"}), 404
-    db.session.delete(student)
-    db.session.commit()
-    return jsonify({"message": "Student deleted"}), 200
