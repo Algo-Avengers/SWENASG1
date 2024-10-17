@@ -5,7 +5,6 @@ class Review(db.Model):
     studentID = db.Column(db.Integer, db.ForeignKey('student.studentID'), nullable=False)
     staffID = db.Column(db.Integer, db.ForeignKey('staff.staffID'), nullable=False)
     reviewType = db.Column(db.String(50), nullable=False)
-    #date = db.Column(db.Date, nullable=False)
     comment = db.Column(db.String(255), nullable=True)
 
     # Relationships

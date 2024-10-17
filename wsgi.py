@@ -56,6 +56,7 @@ def list_user_command(format):
 @click.argument("student_faculty")
 def add_student_command(student_id, student_name, student_programme, student_faculty):
     result = add_student(student_id, student_name, student_programme, student_faculty)
+    print(f"Student added: {result}")
 
 #search student command
 @user_cli.command("search_student", help="Search for a student by ID")
@@ -66,17 +67,17 @@ def search_student_command(student_id):
 
 #add student review command
 @user_cli.command("add_review", help="Add a review for a student")
-@click.argument("student_id")
-@click.argument("staff_id")
-@click.argument("review_text")
-@click.argument("rating", type=int)
-def add_review_command(student_id, staff_id, review_text, rating):
-    result = add_review(student_id, staff_id, review_text, rating)
+@click.argument("student_id", type=int)
+@click.argument("staff_id", type=int)
+@click.argument("review_type")
+@click.argument("comment", required=False, default="")
+def add_review_command(student_id, staff_id, review_type, comment):
+    result = add_review(student_id, staff_id, review_type, comment)
     print(f"Review added: {result}")
 
 #view student review command
 @user_cli.command("view_reviews", help="View reviews for a specific student")
-@click.argument("student_id")
+@click.argument("student_id", type=int)
 def view_reviews_command(student_id):
     result = view_student_reviews(student_id)
     print(result)

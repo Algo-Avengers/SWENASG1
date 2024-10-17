@@ -10,55 +10,51 @@ review_views = Blueprint('review_views', __name__)
 @jwt_required()
 def create_review():
     data = request.json
-    staff_id = get_jwt_identity()
-    student_id = data.get('student_id')
-    review_type = data.get('type')
-    course = data.get('course')
+    staffID = get_jwt_identity()
+    studentID = data.get('studentID')
+    reviewType = data.get('reviewType')
     comment = data.get('comment')
-    if not student_id or not review_type or not course or not comment:
-        return jsonify({"error": "Student ID, type, course, and comment are required"}), 400
+    if not studentID or not reviewType:
+        return jsonify({"error": "Student ID and review type are required"}), 400
     new_review = review(
-        student_id=student_id,
-        staff_id=staff_id,
-        type=review_type,
-        course=course,
+        studentID=studentID,
+        staffID=staffID,
+        reviewType=reviewType,
         comment=comment
     )
     db.session.add(new_review)
     db.session.commit()
     return jsonify(review_to_json(new_review)), 201
 
-@review_views.route('/api/review/student/<int:student_id>', methods=['GET'])
+@review_views.route('/api/review/student/<int:studentID>', methods=['GET'])
 @jwt_required()
-def get_student_reviews(student_id):
-    reviews = review.query.filter_by(student_id=student_id).all()
+def get_student_reviews(studentID):
+    reviews = review.query.filter_by(studentID=studentID).all()
     if not reviews:
         return jsonify({"error": "No reviews found for this student"}), 404
     reviews_list = [review_to_json(review) for review in reviews]
     return jsonify({"reviews": reviews_list}), 200
 
-@review_views.route('/api/review/<int:id>', methods=['GET'])
+@review_views.route('/api/review/<int:reviewID>', methods=['GET'])
 @jwt_required()
-def get_review(id):
-    review = review.query.get(id)
+def get_review(reviewID):
+    review = review.query.get(reviewID)
     if not review:
         return jsonify({"error": "Review not found"}), 404
     return jsonify(review_to_json(review)), 200
 
-@review_views.route('/api/review/<int:id>', methods=['PUT'])
+@review_views.route('/api/review/<int:reviewID>', methods=['PUT'])
 @jwt_required()
-def update_review(id):
+def update_review(reviewID):
     data = request.json
-    review_type = data.get('type')
-    course = data.get('course')
+    reviewType = data.get('reviewType')
     comment = data.get('comment')
-    if not review_type or not course or not comment:
-        return jsonify({"error": "Type, course, and comment are required"}), 400
-    review = review.query.get(id)
+    if not reviewType:
+        return jsonify({"error": "Review type is required"}), 400
+    review = review.query.get(reviewID)
     if not review:
         return jsonify({"error": "Review not found"}), 404
-    review.type = review_type
-    review.course = course
+    review.reviewType = reviewType
     review.comment = comment
     db.session.commit()
     return jsonify(review_to_json(review)), 200

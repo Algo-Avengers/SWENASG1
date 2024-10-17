@@ -10,17 +10,17 @@ def add_review(student_id, staff_id, review_type, course, comment):
     if not staff:
         return {"message": "Staff not found."}
 
-    new_review = Review(student_id=student_id, staff_id=staff_id, type=review_type, course=course, comment=comment)
+    new_review = Review(studentID=student_id, staffID=staff_id, reviewType=review_type, course=course, comment=comment)
     db.session.add(new_review)
     db.session.commit()
-    return {"message": f"Review added successfully"}
+    return {"message": "Review added successfully"}
 
 def view_student_reviews(student_id):
     student = student.query.get(student_id)
     if not student:
         return {"message": "Student not found."}
 
-    reviews = Review.query.filter_by(student_id=student_id).all()
+    reviews = Review.query.filter_by(studentID=student_id).all()
     if not reviews:
         return {"message": "No reviews found for this student."}
 
@@ -29,10 +29,10 @@ def view_student_reviews(student_id):
 
 def review_to_json(review):
     return {
-        "id": review.id,
-        "student_id": review.student_id,
-        "staff_id": review.staff_id,
-        "type": review.type,
+        "id": review.reviewID,
+        "student_id": review.studentID,
+        "staff_id": review.staffID,
+        "type": review.reviewType,
         "course": review.course,
         "comment": review.comment,
         "timestamp": review.timestamp
