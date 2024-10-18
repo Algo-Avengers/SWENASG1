@@ -31,5 +31,5 @@ def toJSON(student):
     }
 
 def get_all_students():
-    students = Student.query.all()  # Fetch all students from the database
+    students = Student.query.all() 
     return [toJSON(student) for student in students]

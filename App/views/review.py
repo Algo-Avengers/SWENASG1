@@ -6,6 +6,7 @@ from App.database import db
 from App.models import Review 
 
 
+
 review_views = Blueprint('review_views', __name__)
 
 @review_views.route('/api/review', methods=['POST'])
@@ -15,7 +16,8 @@ def create_review():
     staffID = get_jwt_identity()
     studentID = data.get('studentID')
     reviewType = data.get('reviewType')
-    comment = data.get('comment', '') 
+    comment = data.get('comment', '')
+    course = data.get('course') 
 
     if not studentID or not reviewType:
         return jsonify({"error": "Student ID and review type are required"}), 400
@@ -24,7 +26,8 @@ def create_review():
         studentID=studentID,
         staffID=staffID,
         reviewType=reviewType,
-        comment=comment
+        comment=comment,
+        course=course
     )
 
     db.session.add(new_review)
@@ -35,7 +38,7 @@ def create_review():
 @review_views.route('/api/review/student/<int:studentID>', methods=['GET'])
 @jwt_required()
 def get_student_reviews(studentID):
-    reviews = review.query.filter_by(studentID=studentID).all()
+    reviews = Review.query.filter_by(studentID=studentID).all()
     if not reviews:
         return jsonify({"error": "No reviews found for this student"}), 404
     reviews_list = [review_to_json(review) for review in reviews]
@@ -44,7 +47,7 @@ def get_student_reviews(studentID):
 @review_views.route('/api/review/<int:reviewID>', methods=['GET'])
 @jwt_required()
 def get_review(reviewID):
-    review = review.query.get(reviewID)
+    review = Review.query.get(reviewID)
     if not review:
         return jsonify({"error": "Review not found"}), 404
     return jsonify(review_to_json(review)), 200
@@ -57,7 +60,7 @@ def update_review(reviewID):
     comment = data.get('comment')
     if not reviewType:
         return jsonify({"error": "Review type is required"}), 400
-    review = review.query.get(reviewID)
+    review = Review.query.get(reviewID)
     if not review:
         return jsonify({"error": "Review not found"}), 404
     review.reviewType = reviewType

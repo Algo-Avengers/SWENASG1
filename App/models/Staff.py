@@ -8,7 +8,7 @@ class Staff(db.Model):
     department = db.Column(db.String(100), nullable=False)
 
      # Relationship
-    reviews = db.relationship('Review', back_populates='staff') # staff can create multiple reviews
+    reviews = db.relationship('Review', back_populates='staff')
 
     def __init__(self, staffID, firstName, lastName, faculty, department):
         self.staffID = staffID

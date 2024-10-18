@@ -58,7 +58,7 @@ def update_student(id):
     faculty = data.get('faculty')
     if not first_name or not last_name or not programme or not faculty:
         return jsonify({"error": "First name, last name, programme, and faculty required"}), 400
-    student = student.query.get(id)
+    student = Student.query.get(id)
     if not student:
         return jsonify({"error": "Student not found"}), 404
     student.firstName = first_name

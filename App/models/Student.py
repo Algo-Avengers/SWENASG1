@@ -8,7 +8,7 @@ class Student(db.Model):
     faculty = db.Column(db.String(100), nullable=False)
 
     # Relationship
-    reviews = db.relationship('Review', back_populates='student') # a student can have mutliple reviews
+    reviews = db.relationship('Review', back_populates='student')
 
     def __init__(self, studentID, firstName, lastName, programme, faculty):
         self.studentID = studentID

@@ -70,6 +70,7 @@ def search_student_command(student_id):
 @click.argument("student_id", type=int)
 @click.argument("staff_id", type=int)
 @click.argument("review_type")
+@click.argument("course")
 @click.argument("comment", required=False, default="")
 def add_review_command(student_id, staff_id, review_type, course, comment):
     result = add_review(student_id, staff_id, review_type, course, comment)
