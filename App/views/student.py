@@ -2,22 +2,37 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from App.controllers import student
 from App.database import db
+from App.models import Student
+
 
 student_views = Blueprint('student_views', __name__)
 
 @student_views.route('/api/student/<int:id>', methods=['GET'])
 @jwt_required()
-def get_student(id):
-    student = student.query.get(id)
+def search_student(id):
+    student = Student.query.get(id)
     if not student:
         return jsonify({"error": "Student not found"}), 404
-    return jsonify(student.to_dict()), 200
+    return jsonify({
+        "studentID": student.studentID,
+        "firstName": student.firstName,
+        "lastName": student.lastName,
+        "programme": student.programme,
+        "faculty": student.faculty
+    }), 200
 
 @student_views.route('/api/student', methods=['GET'])
 @jwt_required()
 def get_all_students():
-    students = student.query.all()
-    return jsonify([student.to_dict() for student in students]), 200
+    students = Student.query.all()
+    
+    return jsonify([{
+        'studentID': student.studentID,
+        'firstName': student.firstName,
+        'lastName': student.lastName,
+        'programme': student.programme,
+        'faculty': student.faculty
+    } for student in students]), 200
 
 @student_views.route('/api/student', methods=['POST'])
 @jwt_required()

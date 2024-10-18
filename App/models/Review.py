@@ -15,7 +15,6 @@ class Review(db.Model):
         self.studentID = studentID
         self.staffID = staffID
         self.reviewType = reviewType
-        #self.date = date
         self.comment = comment
 
     def get_json(self):

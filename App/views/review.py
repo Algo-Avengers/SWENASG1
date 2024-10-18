@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from App.controllers.review import review_to_json
 from App.controllers import review, student
 from App.database import db
+from App.models import Review 
+
 
 review_views = Blueprint('review_views', __name__)
 
@@ -13,17 +15,21 @@ def create_review():
     staffID = get_jwt_identity()
     studentID = data.get('studentID')
     reviewType = data.get('reviewType')
-    comment = data.get('comment')
+    comment = data.get('comment', '') 
+
     if not studentID or not reviewType:
         return jsonify({"error": "Student ID and review type are required"}), 400
-    new_review = review(
+    
+    new_review = Review(  
         studentID=studentID,
         staffID=staffID,
         reviewType=reviewType,
         comment=comment
     )
+
     db.session.add(new_review)
     db.session.commit()
+    
     return jsonify(review_to_json(new_review)), 201
 
 @review_views.route('/api/review/student/<int:studentID>', methods=['GET'])
