@@ -45,36 +45,38 @@ class UserUnitTests(unittest.TestCase):
         password = "mypass"
         user = User("bob", password)
         assert user.check_password(password)
-    def test_add_student(self):
-        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
-        assert student.id == "12345"
-        assert student.name == "Jake Blue"
-        assert student.programme == "Computer Science"
-        assert student.department == "DCIT"
 
-    def test_search_student(self):
-        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
-        search_result = search_student("12345")
-        assert search_result is not None
-        assert search_result.id == "12345"
-        assert search_result.name == "Jake Blue"
+    def test_add_student(self):
+        student = add_student(12345, "Jake", "Blue", "Computer Science", "FST")
+        assert student['id'] == 12345
+        assert student['first_name'] == "Jake"
+        assert student['last_name'] == "Blue"
+        assert student['programme'] == "Computer Science"
+        assert student['faculty'] == "FST"
 
     def test_add_review(self):
-        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
-        review = add_review("12345", "0001", "Positive", "COMP 1601", "Excellent Conduct")
-        assert review.studentid == "12345"
-        assert review.staffid == "0001"
-        assert review.type == "Positive"
-        assert review.course == "COMP 1601"
-        assert review.comment == "Excellent Conduct"
+        student = add_student(12345, "Jake", "Blue", "Computer Science", "FST")
+        review = add_review(12345, 1, "Positive", "COMP 1601", "Excellent Conduct")
+        assert review['student_id'] == 12345  
+        assert review['staff_id'] == 1
+        assert review['type'] == "Positive"
+        assert review['course'] == "COMP 1601"
+        assert review['comment'] == "Excellent Conduct"
+
+    def test_search_student(self):
+        student = add_student(12345, "Jake", "Blue", "Computer Science", "FST")
+        search_result = search_student(12345)
+        assert search_result is not None
+        assert search_result['id'] == 12345  
+        assert search_result['first_name'] == "Jake"
 
     def test_view_reviews(self):
-        student = add_student("Jake Blue", "12345", "Computer Science", "DCIT")
-        add_review("12345", "0001", "Positive", "COMP 1601", "Excellent Conduct")
-        reviews_list = view_student_reviews("12345")
+        student = add_student(12345, "Jake", "Blue", "Computer Science", "FST")
+        add_review(12345, 1, "Positive", "COMP 1601", "Excellent Conduct")
+        reviews_list = view_student_reviews(12345)
         assert reviews_list is not None
         assert len(reviews_list) > 0
-        assert reviews_list[0].student_id == "12345"
+        assert reviews_list[0]['student_id'] == 12345 
 
 '''
     Integration Tests
@@ -125,11 +127,12 @@ class UsersIntegrationTests(unittest.TestCase):
         assert user.is_staff == True
 
     def test_add_student(self):
-        student = add_student("John Doe", "12345")
-        retrieved_student = get_user(student.id)
+        student = add_student(12345, "John", "Doe", "Computer Science", "FST")
+        retrieved_student = search_student(12345)  # Use search_student to verify
         assert retrieved_student is not None
-        assert retrieved_student.name == "John Doe"
-        assert retrieved_student.student_id == "12345"
+        assert retrieved_student.first_name == "John"
+        assert retrieved_student.last_name == "Doe"
+        assert retrieved_student.id == 12345
 
     def test_add_review(self):
         student = add_student("Jane Doe", "54321")
@@ -139,11 +142,12 @@ class UsersIntegrationTests(unittest.TestCase):
         assert reviews['reviews'][0]['comment'] == "Great job on the project!"  # Ensure you're checking comment
         
     def test_search_student(self):
-        student = add_student("Alice", "67890")
-        searched_student = search_student("67890")
-        assert searched_student is not None
-        assert searched_student.name == "Alice"
-        assert searched_student.student_id == "67890"
+            student = add_student(67890, "Alice", "Smith", "Mathematics", "FST")
+            searched_student = search_student(67890)
+            assert searched_student is not None
+            assert searched_student.first_name == "Alice"
+            assert searched_student.last_name == "Smith"
+            assert searched_student.id == 67890
 
     def test_view_student_reviews(self):
         student = add_student("Bob", "09876")
