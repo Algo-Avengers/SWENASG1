@@ -136,9 +136,8 @@ class UsersIntegrationTests(unittest.TestCase):
         add_review(student.id, "Good performance", 5)
         reviews = view_student_reviews(student.id)
         assert len(reviews) == 1
-        assert reviews[0].content == "Good performance"
-        assert reviews[0].rating == 5
-
+        assert reviews['reviews'][0]['comment'] == "Great job on the project!"  # Ensure you're checking comment
+        
     def test_search_student(self):
         student = add_student("Alice", "67890")
         searched_student = search_student("67890")
@@ -148,13 +147,11 @@ class UsersIntegrationTests(unittest.TestCase):
 
     def test_view_student_reviews(self):
         student = add_student("Bob", "09876")
-        add_review(student.id, "Excellent", 5)
-        add_review(student.id, "Needs improvement", 3)
+        add_review(student.id, "1000", "Excellent", "COMP 3613", "Excellent performance.")
+        add_review(student.id, "1000", "Needs improvement", "COMP 3613", "Could do better next time.")
         reviews = view_student_reviews(student.id)
         assert len(reviews) == 2
-        assert reviews[0].content == "Excellent"
-        assert reviews[0].rating == 5
-        assert reviews[1].content == "Needs improvement"
-        assert reviews[1].rating == 3
+        assert reviews['reviews'][0]['comment'] == "Excellent performance."
+        assert reviews['reviews'][1]['comment'] == "Could do better next time."
         
 

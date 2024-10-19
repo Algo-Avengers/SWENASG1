@@ -47,8 +47,13 @@ def list_user_command(format):
     else:
         print(get_all_users_json())
 
-#add student command
-@user_cli.command("add_student", help="Adds a new student")
+app.cli.add_command(user_cli) # add the group to the cli
+
+student_cli = AppGroup('student', help='Student object commands') 
+
+#add student command - flask student add_student 1234 Jake Blue "Computer Science" FST
+
+@student_cli.command("add_student", help="Adds a new student")
 @click.argument("student_id", type=int)
 @click.argument("first_name")
 @click.argument("last_name")
@@ -58,15 +63,19 @@ def add_student_command(student_id, first_name, last_name, student_programme, st
     result = add_student(student_id, first_name, last_name, student_programme, student_faculty)
     print(f"Student added: {result}")
 
-#search student command
-@user_cli.command("search_student", help="Search for a student by ID")
+#search student command - flask student search_student 1234
+@student_cli.command("search_student", help="Search for a student by ID")
 @click.argument("student_id")
 def search_student_command(student_id):
     result = search_student(student_id)  # Only one return value
     print(result)
 
-#add student review command
-@user_cli.command("add_review", help="Add a review for a student")
+app.cli.add_command(student_cli) # add the group to the cli
+
+review_cli = AppGroup('review', help='Review object commands')
+
+#add student review command - flask review add_review 1234 1000 "positive" "COMP 3613" "Good Student."
+@review_cli.command("add_review", help="Add a review for a student")
 @click.argument("student_id", type=int)
 @click.argument("staff_id", type=int)
 @click.argument("review_type")
@@ -76,14 +85,14 @@ def add_review_command(student_id, staff_id, review_type, course, comment):
     result = add_review(student_id, staff_id, review_type, course, comment)
     print(f"Review added: {result}")
 
-#view student review command
-@user_cli.command("view_reviews", help="View reviews for a specific student")
+#view student review command - flask review view_reviews 1234
+@review_cli.command("view_reviews", help="View reviews for a specific student")
 @click.argument("student_id", type=int)
 def view_reviews_command(student_id):
     result = view_student_reviews(student_id)
     print(result)
 
-app.cli.add_command(user_cli) # add the group to the cli
+app.cli.add_command(review_cli) # add the group to the cli
 
 '''
 Test Commands

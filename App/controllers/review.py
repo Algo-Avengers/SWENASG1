@@ -3,12 +3,9 @@ from App.database import db
 
 def add_review(student_id, staff_id, review_type, course, comment):
     student = Student.query.get(student_id)
-    staff = Staff.query.get(staff_id)
 
     if not student:
         return {"message": "Student not found."}
-    if not staff:
-        return {"message": "Staff not found."}
 
     new_review = Review(studentID=student_id, staffID=staff_id, reviewType=review_type, course=course, comment=comment)
     db.session.add(new_review)
